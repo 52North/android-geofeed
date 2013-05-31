@@ -67,7 +67,7 @@ public class FeedHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName,
             Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
-
+        
         if (feedFactory == null) {
             try {
                 Class<? extends FeedFactory> factoryClass = factoryMap
@@ -83,25 +83,12 @@ public class FeedHandler extends DefaultHandler {
             } catch (InvalidFeedTypeException e) {
                 e.printStackTrace();
             }
-        }
+        } 
         
         BaseFeedElement newElement = feedFactory.createElement(localName, uri, attributes);
-
-//        if (localName.equalsIgnoreCase(ATOM_FEED_TAG)) {
-//            this.feed = new AtomFeed(ATOM_FEED_TAG, uri, attributes);
-//            newElement = (BaseFeedElement) this.feed;
-//        } else if (localName.equals(RSS_FEED_TAG)) {
-//            this.feed = new RSSFeed_2(RSS_FEED_TAG, uri, attributes);
-//            newElement = (BaseFeedElement) this.feed;
-//        } else if (localName.equalsIgnoreCase(ATOM_ENTRY_TAG)) {
-//            newElement = new AtomEntry(ATOM_ENTRY_TAG, uri, attributes);
-//        } else if (localName.equalsIgnoreCase(RSS_FEED_TAG)) {
-//            newElement = new RSSItem_2(RSS_ITEM_TAG, uri, attributes);
-//            // } else if (uri.equals()){
-//            // newElement = new BaseGe
-//        } else {
-//            newElement = new BaseFeedElement(localName, uri, attributes);
-//        }
+        if(feed == null){  
+            feed = (IFeed) newElement;
+        }
 
         elementStack.push(newElement);
         builder = new StringBuilder();
