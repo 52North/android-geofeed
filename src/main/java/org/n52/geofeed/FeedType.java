@@ -15,15 +15,23 @@
  */
 package org.n52.geofeed;
 
-import java.io.InputStream;
-
-import org.n52.geofeed.feed.IFeed;
-
 /**
  * 
  * @author Arne de Wall <a.dewall@52North.org>
  *
  */
-public interface FeedParser {
-    IFeed parse(InputStream inStream) throws Exception;
+public enum FeedType {
+    ATOM2("http://www.w3.org/2005/Atom"),
+    RSS2("");
+    
+    private String namespace;
+    
+    FeedType(String ns){
+        namespace = ns;
+    }
+    
+    public String getNamespace(){
+        return namespace;
+    }
+    
 }

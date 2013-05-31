@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.geofeed;
+package org.n52.geofeed.feed.geo;
 
-import java.io.InputStream;
-
-import org.n52.geofeed.feed.IFeed;
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * 
  * @author Arne de Wall <a.dewall@52North.org>
  *
  */
-public interface FeedParser {
-    IFeed parse(InputStream inStream) throws Exception;
+public interface IBox {
+    String BOX = "box";
+    Envelope getBBox();
 }

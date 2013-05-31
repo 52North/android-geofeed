@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.n52.geofeed.core.FeedElement;
+import org.n52.geofeed.feed.FeedElement;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -30,9 +30,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Arne de Wall <a.dewall@52North.org>
  *
  */
-public class BaseFeedElement implements FeedElement{
-    public static final int ATOM_TYPE = 1;
-    
+public class BaseFeedElement implements FeedElement{    
     private final String name;
     private final String uri;
     private String content;

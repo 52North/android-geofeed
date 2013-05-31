@@ -15,8 +15,8 @@
  */
 package org.n52.geofeed;
 
-import org.n52.geofeed.core.IEntry;
-import org.n52.geofeed.core.IFeed;
+import org.n52.geofeed.feed.IEntry;
+import org.n52.geofeed.feed.IFeed;
 
 import android.test.AndroidTestCase;
 

@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.geofeed;
+package org.n52.geofeed.feed.geo;
 
-import java.io.InputStream;
-
-import org.n52.geofeed.feed.IFeed;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * 
  * @author Arne de Wall <a.dewall@52North.org>
  *
  */
-public interface FeedParser {
-    IFeed parse(InputStream inStream) throws Exception;
+public interface ILineString {
+    String LINE = "line";
+    
+    LineString getLineString();
+    Point getPoint(int idx);
+    double getSize();
 }

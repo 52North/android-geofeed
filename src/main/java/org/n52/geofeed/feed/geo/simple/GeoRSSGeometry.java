@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.geofeed;
-
-import java.io.InputStream;
-
-import org.n52.geofeed.feed.IFeed;
+package org.n52.geofeed.feed.geo.simple;
 
 /**
  * 
  * @author Arne de Wall <a.dewall@52North.org>
  *
  */
-public interface FeedParser {
-    IFeed parse(InputStream inStream) throws Exception;
+public interface GeoRSSGeometry {
+    String GEORSS_NAMESPACE = "http://www.georss.org/georss";
 }

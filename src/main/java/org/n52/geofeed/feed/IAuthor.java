@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.geofeed;
-
-import java.io.InputStream;
-
-import org.n52.geofeed.feed.IFeed;
+package org.n52.geofeed.feed;
 
 /**
  * 
  * @author Arne de Wall <a.dewall@52North.org>
  *
  */
-public interface FeedParser {
-    IFeed parse(InputStream inStream) throws Exception;
+public interface IAuthor extends FeedElement{
+    String NAME = "name";
+    String URI = "uri";
+    String EMAIL = "email";
+    
+    public String getAuthorName();
+    public String getAuthorUri();
+    public String getEmail();
 }

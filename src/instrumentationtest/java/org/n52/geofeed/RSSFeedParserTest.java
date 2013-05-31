@@ -19,9 +19,9 @@ import java.util.List;
 
 import org.n52.geofeed.BaseFeedParser;
 import org.n52.geofeed.FeedParser;
-import org.n52.geofeed.core.FeedElement;
-import org.n52.geofeed.core.IFeed;
-import org.n52.geofeed.rss2.RSSItem_2;
+import org.n52.geofeed.feed.FeedElement;
+import org.n52.geofeed.feed.IFeed;
+import org.n52.geofeed.feed.rss2.RSSItem_2;
 
 import android.test.AndroidTestCase;
 

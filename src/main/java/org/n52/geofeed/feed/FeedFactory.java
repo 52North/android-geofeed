@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.geofeed;
+package org.n52.geofeed.feed;
 
-import java.io.InputStream;
-
-import org.n52.geofeed.feed.IFeed;
+import org.n52.geofeed.BaseFeedElement;
+import org.xml.sax.Attributes;
 
 /**
  * 
  * @author Arne de Wall <a.dewall@52North.org>
  *
  */
-public interface FeedParser {
-    IFeed parse(InputStream inStream) throws Exception;
+public interface FeedFactory {
+    BaseFeedElement createElement(String localName, String uri, Attributes attributes);
 }

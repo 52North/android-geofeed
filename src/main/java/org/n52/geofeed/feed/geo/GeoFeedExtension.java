@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.geofeed;
-
-import java.io.InputStream;
+package org.n52.geofeed.feed.geo;
 
 import org.n52.geofeed.feed.IFeed;
+import org.n52.geofeed.feed.extension.BaseFeedExtensionDecorator;
 
 /**
  * 
  * @author Arne de Wall <a.dewall@52North.org>
  *
  */
-public interface FeedParser {
-    IFeed parse(InputStream inStream) throws Exception;
+public class GeoFeedExtension extends BaseFeedExtensionDecorator{
+
+    public GeoFeedExtension(IFeed feed) {
+        super(feed);
+    }
+
 }

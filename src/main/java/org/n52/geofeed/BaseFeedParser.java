@@ -21,7 +21,7 @@ import java.util.Scanner;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.n52.geofeed.core.IFeed;
+import org.n52.geofeed.feed.IFeed;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 

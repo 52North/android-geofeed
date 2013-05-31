@@ -15,13 +15,19 @@
  */
 package org.n52.geofeed;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
-import org.n52.geofeed.atom.AtomEntry;
-import org.n52.geofeed.atom.AtomFeed;
-import org.n52.geofeed.core.IFeed;
-import org.n52.geofeed.rss2.RSSFeed_2;
-import org.n52.geofeed.rss2.RSSItem_2;
+import org.n52.geofeed.exception.InvalidFeedTypeException;
+import org.n52.geofeed.feed.FeedFactory;
+import org.n52.geofeed.feed.IFeed;
+import org.n52.geofeed.feed.atom.AtomEntry;
+import org.n52.geofeed.feed.atom.AtomFeed;
+import org.n52.geofeed.feed.atom.AtomFeedFactory;
+import org.n52.geofeed.feed.rss2.RSS2FeedFactory;
+import org.n52.geofeed.feed.rss2.RSSFeed_2;
+import org.n52.geofeed.feed.rss2.RSSItem_2;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -36,10 +42,20 @@ public class FeedHandler extends DefaultHandler {
     static final String ATOM_ENTRY_TAG = "entry";
     static final String RSS_FEED_TAG = "rss";
     static final String RSS_ITEM_TAG = "item";
-    
+
+    private static Map<String, Class<? extends FeedFactory>> factoryMap = new HashMap<String, Class<? extends FeedFactory>>() {
+        private static final long serialVersionUID = -7620727063955616858L;
+        {
+            put(ATOM_FEED_TAG, AtomFeedFactory.class);
+            put(RSS_FEED_TAG, RSS2FeedFactory.class);
+        }
+    };
+
     private IFeed feed;
     private StringBuilder builder;
     private Stack<BaseFeedElement> elementStack;
+
+    private FeedFactory feedFactory;
 
     @Override
     public void startDocument() throws SAXException {
@@ -52,23 +68,40 @@ public class FeedHandler extends DefaultHandler {
             Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
 
-        BaseFeedElement newElement;
+        if (feedFactory == null) {
+            try {
+                Class<? extends FeedFactory> factoryClass = factoryMap
+                        .get(localName);
+                if (factoryClass == null) 
+                    throw new InvalidFeedTypeException(localName);
 
-        if (localName.equalsIgnoreCase(ATOM_FEED_TAG)) {
-            this.feed = new AtomFeed(ATOM_FEED_TAG, uri, attributes);
-            newElement = (BaseFeedElement) this.feed;
-        } else if (localName.equals(RSS_FEED_TAG)){
-            this.feed = new RSSFeed_2(RSS_FEED_TAG, uri, attributes);
-            newElement = (BaseFeedElement) this.feed;
-        } else if (localName.equalsIgnoreCase(ATOM_ENTRY_TAG)) {
-            newElement = new AtomEntry(ATOM_ENTRY_TAG, uri, attributes);
-        } else if (localName.equalsIgnoreCase(RSS_FEED_TAG)){
-            newElement = new RSSItem_2(RSS_ITEM_TAG, uri, attributes);
-//        } else if (uri.equals()){
-//            newElement = new BaseGe
-        } else {
-            newElement = new BaseFeedElement(localName, uri, attributes);
+                feedFactory = factoryClass.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvalidFeedTypeException e) {
+                e.printStackTrace();
+            }
         }
+        
+        BaseFeedElement newElement = feedFactory.createElement(localName, uri, attributes);
+
+//        if (localName.equalsIgnoreCase(ATOM_FEED_TAG)) {
+//            this.feed = new AtomFeed(ATOM_FEED_TAG, uri, attributes);
+//            newElement = (BaseFeedElement) this.feed;
+//        } else if (localName.equals(RSS_FEED_TAG)) {
+//            this.feed = new RSSFeed_2(RSS_FEED_TAG, uri, attributes);
+//            newElement = (BaseFeedElement) this.feed;
+//        } else if (localName.equalsIgnoreCase(ATOM_ENTRY_TAG)) {
+//            newElement = new AtomEntry(ATOM_ENTRY_TAG, uri, attributes);
+//        } else if (localName.equalsIgnoreCase(RSS_FEED_TAG)) {
+//            newElement = new RSSItem_2(RSS_ITEM_TAG, uri, attributes);
+//            // } else if (uri.equals()){
+//            // newElement = new BaseGe
+//        } else {
+//            newElement = new BaseFeedElement(localName, uri, attributes);
+//        }
 
         elementStack.push(newElement);
         builder = new StringBuilder();
@@ -91,15 +124,16 @@ public class FeedHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
         super.endElement(uri, localName, qName);
-        BaseFeedElement current = elementStack.pop().setContent(builder.toString());
-        
+        BaseFeedElement current = elementStack.pop().setContent(
+                builder.toString());
+
         if (!elementStack.empty())
             elementStack.peek().addElementToMap(new String(qName), current);
-        
+
         this.builder.delete(0, builder.length());
     }
-    
-    public IFeed getFeed(){
+
+    public IFeed getFeed() {
         return this.feed;
     }
 }

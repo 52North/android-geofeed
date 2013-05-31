@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.geofeed;
-
-import java.io.InputStream;
-
-import org.n52.geofeed.feed.IFeed;
+package org.n52.geofeed.exception;
 
 /**
  * 
  * @author Arne de Wall <a.dewall@52North.org>
- *
+ * 
  */
-public interface FeedParser {
-    IFeed parse(InputStream inStream) throws Exception;
+public class NoElementOfFeedTypeException extends Exception {
+    private static final long serialVersionUID = -1522197152591317277L;
+
+    public NoElementOfFeedTypeException(String type, String element) {
+        super(String.format("The Feedtype %s does not have %s as a element.",
+                type, element));
+    }
 }
