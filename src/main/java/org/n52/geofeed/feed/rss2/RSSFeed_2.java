@@ -15,6 +15,7 @@
  */
 package org.n52.geofeed.feed.rss2;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,9 +24,11 @@ import org.n52.geofeed.FeedConstants;
 import org.n52.geofeed.FeedType;
 import org.n52.geofeed.exception.NoElementOfFeedTypeException;
 import org.n52.geofeed.feed.FeedElement;
+import org.n52.geofeed.feed.IAuthor;
 import org.n52.geofeed.feed.ICategory;
 import org.n52.geofeed.feed.IEntry;
 import org.n52.geofeed.feed.IFeed;
+import org.n52.geofeed.feed.ILink;
 import org.xml.sax.Attributes;
 
 /**
@@ -60,16 +63,19 @@ public class RSSFeed_2 extends BaseFeedElement implements IFeed {
     }
 
     @Override
-    public Date getPublishedDate() {
+    public String getPublishedDate() {
         FeedElement element = getElement(FeedConstants.RSS_FEED.PUBLISHED);
         // TODO
         return null;
     }
 
     @Override
-    public List<FeedElement> getCategories() {
+    public List<String> getCategories() {
         List<FeedElement> element = getElementList(FeedConstants.RSS_FEED.CATEGORY);
-        return element;
+        List<String> res = new ArrayList<String>();
+        for(FeedElement e : element)
+            res.add(e.getContentString());
+        return res;
     }
 
     @SuppressWarnings("unchecked")
@@ -109,6 +115,26 @@ public class RSSFeed_2 extends BaseFeedElement implements IFeed {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public FeedElement getLinkElement() {
+        return getElement(LINK_ELEMENT);
+    }
+
+    @Override
+    public FeedElement getAuthorElement() {
+        try {
+            throw new NoElementOfFeedTypeException("RSS2.0", "author");
+        } catch (NoElementOfFeedTypeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<FeedElement> getCategoryElements() {
+        return getElementList(CATEGORY_ELEMENT);
     }
     
 

@@ -59,7 +59,7 @@ public class RSSFeedParserTest extends AndroidTestCase {
         assertEquals("RSS lang", "en-us", feed.getElement("language").getContentString());
         assertEquals("RSS right", "Copyright", feed.getElement("copyright").getContentString());
         
-        for(FeedElement cat : feed.getCategories()){
+        for(FeedElement cat : feed.getCategoryElements()){
             assertEquals("RSS cat", "category", cat.getContentString());
         }
         

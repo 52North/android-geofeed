@@ -15,7 +15,6 @@
  */
 package org.n52.geofeed.feed.extension;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +22,6 @@ import org.n52.geofeed.FeedType;
 import org.n52.geofeed.feed.FeedElement;
 import org.n52.geofeed.feed.IEntry;
 import org.n52.geofeed.feed.IFeed;
-import org.n52.geofeed.feed.geo.IGeoFeed;
 import org.xml.sax.Attributes;
 
 /**
@@ -89,18 +87,19 @@ public class BaseFeedExtensionDecorator implements IFeed {
     }
 
     @Override
-    public Date getPublishedDate() {
+    public String getPublishedDate() {
         return feed.getPublishedDate();
     }
 
     @Override
-    public List<FeedElement> getCategories() {
+    public List<String> getCategories() {
         return feed.getCategories();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<IEntry> getEntrys() {
-        return feed.getEntrys();
+        return (List<IEntry>)feed.getEntrys();
     }
 
     @Override
@@ -111,6 +110,21 @@ public class BaseFeedExtensionDecorator implements IFeed {
     @Override
     public String getAuthor() {
         return feed.getAuthor();
+    }
+
+    @Override
+    public FeedElement getLinkElement() {
+        return feed.getLinkElement();
+    }
+
+    @Override
+    public FeedElement getAuthorElement() { 
+        return feed.getAuthorElement();
+    }
+
+    @Override
+    public List<? extends FeedElement> getCategoryElements() {
+        return feed.getCategoryElements();
     }
 
 }

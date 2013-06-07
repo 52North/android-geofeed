@@ -15,13 +15,14 @@
  */
 package org.n52.geofeed.feed.atom;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.n52.geofeed.BaseFeedElement;
-import org.n52.geofeed.FeedDateTimeConverter;
 import org.n52.geofeed.FeedType;
 import org.n52.geofeed.feed.FeedElement;
+import org.n52.geofeed.feed.IAuthor;
+import org.n52.geofeed.feed.ICategory;
 import org.n52.geofeed.feed.IEntry;
 import org.n52.geofeed.feed.IFeed;
 import org.xml.sax.Attributes;
@@ -59,23 +60,23 @@ public class AtomFeed extends BaseFeedElement implements IFeed {
     }
 
     @Override
-    public Date getPublishedDate() {
+    public String getPublishedDate() {
         FeedElement element = getElement(UPDATED_ELEMENT);
-        return FeedDateTimeConverter.parseW3CDate(element.getContentString());
+        return element.getContentString();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<FeedElement> getCategories() {
+    public List<AtomCategory> getCategoryElements() {
         List<FeedElement> element = getElementList(CATEGORY_ELEMENT);
-        return element;
+        return (List<AtomCategory>)(List<?>) element;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<IEntry> getEntrys() {
+    public List<AtomEntry> getEntrys() {
         List<FeedElement> element = getElementList(ENTRY_ELEMENT);
-        return (List<IEntry>)(List<?>) element;
+        return (List<AtomEntry>)(List<?>) element;
     }
 
     @Override
@@ -89,5 +90,25 @@ public class AtomFeed extends BaseFeedElement implements IFeed {
         FeedElement element = getElement(AUTHOR_ELEMENT);
         element = element == null ? null : element.getElement(AUTHOR_NAME_ELEMENT);
         return element == null ? null : element.getContentString();
+    }
+
+    @Override
+    public AtomLink getLinkElement() {
+        return (AtomLink) getElement(LINK_ELEMENT);
+    }
+
+    @Override
+    public IAuthor getAuthorElement() {
+        return (IAuthor) getElement(AUTHOR_ELEMENT);
+    }
+
+    @Override
+    public List<String> getCategories() {
+        List<FeedElement> element = getElementList(CATEGORY_ELEMENT);
+        List<String> res = new ArrayList<String>();
+        for(FeedElement e : element){
+            res.add(e.getContentString());
+        }
+        return res;
     }
 }

@@ -15,7 +15,6 @@
  */
 package org.n52.geofeed.feed;
 
-import java.util.Date;
 import java.util.List;
 
 import org.n52.geofeed.FeedType;
@@ -36,14 +35,14 @@ public interface IFeed extends FeedElement {
     public String getTitle();
     public FeedType getFeedType();
     public String getLink();
+    public FeedElement getLinkElement();
     public String getDescription();
-    public Date getPublishedDate();
+    public String getPublishedDate();
     public String getAuthor();
-//    public List<String> getAuthors();
-//    public IImage getImage();
-    public List<FeedElement> getCategories();
-    public List<IEntry> getEntrys();
-//    public String getLanguage(String language);
+    public FeedElement getAuthorElement();
+    public List<String> getCategories();
+    public List<? extends FeedElement> getCategoryElements();
+    public List<? extends IEntry> getEntrys();
     
     // TODO Modules!?
 }

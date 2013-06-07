@@ -16,7 +16,6 @@
 package org.n52.geofeed;
 
 import java.io.InputStream;
-import java.util.Scanner;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -35,7 +34,10 @@ public class BaseFeedParser implements FeedParser {
     @Override
     public IFeed parse(InputStream inStream) throws Exception {
         try {
-            SAXParser saxP = SAXParserFactory.newInstance().newSAXParser();
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setNamespaceAware(true);
+
+            SAXParser saxP = factory.newSAXParser();
             XMLReader xmlReader = saxP.getXMLReader();
  
             FeedHandler feedHandler = new FeedHandler();

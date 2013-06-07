@@ -15,19 +15,19 @@
  */
 package org.n52.geofeed;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.n52.geofeed.exception.InvalidFeedTypeException;
 import org.n52.geofeed.feed.FeedFactory;
 import org.n52.geofeed.feed.IFeed;
-import org.n52.geofeed.feed.atom.AtomEntry;
-import org.n52.geofeed.feed.atom.AtomFeed;
 import org.n52.geofeed.feed.atom.AtomFeedFactory;
+import org.n52.geofeed.feed.geo.GeoRSSSimpleFactory;
 import org.n52.geofeed.feed.rss2.RSS2FeedFactory;
-import org.n52.geofeed.feed.rss2.RSSFeed_2;
-import org.n52.geofeed.feed.rss2.RSSItem_2;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -38,6 +38,8 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  */
 public class FeedHandler extends DefaultHandler {
+    private static final String GEORSS_SIMPLE_NS = "http://www.georss.org/georss";
+
     static final String ATOM_FEED_TAG = "feed";
     static final String ATOM_ENTRY_TAG = "entry";
     static final String RSS_FEED_TAG = "rss";
@@ -51,17 +53,38 @@ public class FeedHandler extends DefaultHandler {
         }
     };
 
+    private static Map<String, Class<? extends FeedFactory>> extensionMap = new HashMap<String, Class<? extends FeedFactory>>() {
+        private static final long serialVersionUID = -3280630678147939541L;
+        {
+            put(GEORSS_SIMPLE_NS, GeoRSSSimpleFactory.class);
+        }
+    };
+
     private IFeed feed;
     private StringBuilder builder;
     private Stack<BaseFeedElement> elementStack;
 
     private FeedFactory feedFactory;
+    
+    private Set<Class<? extends FeedFactory>> usedExtensions = new HashSet<Class<? extends FeedFactory>>();
 
     @Override
     public void startDocument() throws SAXException {
         elementStack = new Stack<BaseFeedElement>();
         super.startDocument();
     }
+
+    
+    
+    @Override
+    public void startPrefixMapping(String prefix, String uri)
+            throws SAXException {
+        if(prefix != null && !prefix.equals(""))
+            usedExtensions.add(extensionMap.get(uri));
+        super.startPrefixMapping(prefix, uri);
+    }
+
+
 
     @Override
     public void startElement(String uri, String localName, String qName,
@@ -74,19 +97,27 @@ public class FeedHandler extends DefaultHandler {
                         .get(localName);
                 if (factoryClass == null) 
                     throw new InvalidFeedTypeException(localName);
-
                 feedFactory = factoryClass.newInstance();
+                
+                for(Class<? extends FeedFactory> fac : usedExtensions)
+                    feedFactory = fac.getConstructor(FeedFactory.class).newInstance(feedFactory);
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvalidFeedTypeException e) {
                 e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
             }
         } 
         
         BaseFeedElement newElement = feedFactory.createElement(localName, uri, attributes);
-        if(feed == null){  
+        if(feed == null){
             feed = (IFeed) newElement;
         }
 
